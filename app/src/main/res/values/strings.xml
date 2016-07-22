@@ -14,4 +14,9 @@
   <!-- Empty Stocks Database -->
   <string name="empty_stocks_list">No stocks information available</string>
   <string name="empty_stocks_list_no_network">No stocks information available. The network is not available to fetch stocks data.</string>
+  <string name="empty_stocks_list_server_down">No stocks information available. The server is not returning data.</string>
+  <string name="empty_stocks_list_server_error">No stocks information available. The server is not returning valid data.</string>
+
+  <!-- Key name for storing quote status in SharedPreferences -->
+  <string name="pref_quote_status_key" translatable="false">quote-status</string>
 </resources>

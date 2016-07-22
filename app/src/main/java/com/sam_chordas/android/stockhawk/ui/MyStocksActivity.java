@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,12 +32,14 @@ import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.rest.QuoteCursorAdapter;
 import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
-import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.rest.RestUtils;
+import com.sam_chordas.android.stockhawk.service.ServiceUtils;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
-public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MyStocksActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
 
   /**
    * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -60,7 +62,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     super.onCreate(savedInstanceState);
     mContext = this;
 
-    isConnected = isNetworkAvailable(mContext);
+    isConnected = ServiceUtils.isNetworkAvailable(mContext);
 
     setContentView(R.layout.activity_my_stocks);
     // The intent service is for executing immediate pulls from the Yahoo API
@@ -159,8 +161,17 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
   @Override
   public void onResume() {
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+    sp.registerOnSharedPreferenceChangeListener(this);
     super.onResume();
     getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+  }
+
+  @Override
+  protected void onPause() {
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+    sp.unregisterOnSharedPreferenceChangeListener(this);
+    super.onPause();
   }
 
   public void networkToast(){
@@ -195,7 +206,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     if (id == R.id.action_change_units){
       // this is for changing stock changes from percent value to dollar value
-      Utils.showPercent = !Utils.showPercent;
+      RestUtils.showPercent = !RestUtils.showPercent;
       this.getContentResolver().notifyChange(QuoteProvider.Quotes.CONTENT_URI, null);
     }
 
@@ -225,19 +236,11 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     mCursorAdapter.swapCursor(null);
   }
 
-  /**
-   * Returns true if the network is available or about to become available.
-   *
-   * @param c Context used to get the ConnectivityManager
-   * @return
-   */
-  static public boolean isNetworkAvailable(Context c) {
-    ConnectivityManager cm =
-            (ConnectivityManager)c.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-    return activeNetwork != null &&
-            activeNetwork.isConnectedOrConnecting();
+  @Override
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    if ( key.equals(getString(R.string.pref_quote_status_key)) ) {
+      updateEmptyView();
+    }
   }
 
   /**
@@ -250,8 +253,18 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
       if ( null != tv ) {
         // if cursor is empty, why? do we have an invalid location
         int message = R.string.empty_stocks_list;
-        if (!isNetworkAvailable(mContext) ) {
-          message = R.string.empty_stocks_list_no_network;
+        @StockTaskService.QuoteStatus int quote = ServiceUtils.getQuoteStatus(this);
+        switch (quote) {
+          case StockTaskService.QUOTE_STATUS_SERVER_DOWN:
+            message = R.string.empty_stocks_list_server_down;
+            break;
+          case StockTaskService.QUOTE_STATUS_SERVER_INVALID:
+            message = R.string.empty_stocks_list_server_error;
+            break;
+          default:
+            if (!ServiceUtils.isNetworkAvailable(this) ) {
+              message = R.string.empty_stocks_list_no_network;
+            }
         }
         tv.setText(message);
       }

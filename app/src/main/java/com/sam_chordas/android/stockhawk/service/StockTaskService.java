@@ -3,21 +3,31 @@ package com.sam_chordas.android.stockhawk.service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.OperationApplicationException;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.util.Log;
+
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
-import com.sam_chordas.android.stockhawk.rest.Utils;
+import com.sam_chordas.android.stockhawk.rest.RestUtils;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.net.URLEncoder;
 
 /**
@@ -33,11 +43,21 @@ public class StockTaskService extends GcmTaskService{
   private StringBuilder mStoredSymbols = new StringBuilder();
   private boolean isUpdate;
 
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({QUOTE_STATUS_OK, QUOTE_STATUS_SERVER_DOWN, QUOTE_STATUS_SERVER_INVALID, QUOTE_STATUS_UNKNOWN})
+  public @interface QuoteStatus {}
+
+  public static final int QUOTE_STATUS_OK = 0;
+  public static final int QUOTE_STATUS_SERVER_DOWN = 1;
+  public static final int QUOTE_STATUS_SERVER_INVALID = 2;
+  public static final int QUOTE_STATUS_UNKNOWN = 3;
+
   public StockTaskService(){}
 
   public StockTaskService(Context context){
     mContext = context;
   }
+
   String fetchData(String url) throws IOException{
     Request request = new Request.Builder()
         .url(url)
@@ -71,7 +91,7 @@ public class StockTaskService extends GcmTaskService{
         // Init task. Populates DB with quotes for the symbols seen below
         try {
           urlStringBuilder.append(
-              URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
+            URLEncoder.encode("\"YHOO\",\"AAPL\",\"GOOG\",\"MSFT\")", "UTF-8"));
         } catch (UnsupportedEncodingException e) {
           e.printStackTrace();
         }
@@ -113,25 +133,38 @@ public class StockTaskService extends GcmTaskService{
       try{
         getResponse = fetchData(urlString);
         result = GcmNetworkManager.RESULT_SUCCESS;
-        try {
-          ContentValues contentValues = new ContentValues();
-          // update ISCURRENT to 0 (false) so new data is current
-          if (isUpdate){
-            contentValues.put(QuoteColumns.ISCURRENT, 0);
-            mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
-                null, null);
-          }
-          mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-              Utils.quoteJsonToContentVals(getResponse));
-        }catch (RemoteException | OperationApplicationException e){
-          Log.e(LOG_TAG, "Error applying batch insert", e);
+        setQuoteStatus(mContext, QUOTE_STATUS_OK);
+
+        ContentValues contentValues = new ContentValues();
+        // update ISCURRENT to 0 (false) so new data is current
+        if (isUpdate){
+          contentValues.put(QuoteColumns.ISCURRENT, 0);
+          mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
+              null, null);
         }
+
+        mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                RestUtils.quoteJsonToContentVals(getResponse));
+
+      } catch (JSONException e){
+        Log.e(LOG_TAG, "String to JSON failed: " + e);
+        setQuoteStatus(mContext, QUOTE_STATUS_SERVER_INVALID);
+      } catch (RemoteException | OperationApplicationException e){
+        Log.e(LOG_TAG, "Error applying batch insert", e);
+        setQuoteStatus(mContext, QUOTE_STATUS_SERVER_INVALID);
       } catch (IOException e){
         e.printStackTrace();
+        setQuoteStatus(mContext, QUOTE_STATUS_SERVER_DOWN);
       }
     }
 
     return result;
   }
 
+  static private void setQuoteStatus(Context c, @QuoteStatus int quoteStatus) {
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+    SharedPreferences.Editor spe = sp.edit();
+    spe.putInt(c.getString(R.string.pref_quote_status_key), quoteStatus);
+    spe.commit();
+  }
 }

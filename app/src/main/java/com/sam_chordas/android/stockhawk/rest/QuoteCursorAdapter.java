@@ -71,7 +71,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
             mContext.getResources().getDrawable(R.drawable.percent_change_pill_red));
       }
     }
-    if (Utils.showPercent){
+    if (RestUtils.showPercent){
       viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("percent_change")));
     } else{
       viewHolder.change.setText(cursor.getString(cursor.getColumnIndex("change")));
@@ -92,8 +92,9 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
   @Override
   public Cursor swapCursor(Cursor newCursor) {
+    Cursor cursor = super.swapCursor(newCursor);
     mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
-    return super.swapCursor(newCursor);
+    return cursor;
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder
