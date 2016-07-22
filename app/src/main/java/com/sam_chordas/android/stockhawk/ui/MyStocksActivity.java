@@ -8,9 +8,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -19,8 +19,14 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.PeriodicTask;
+import com.google.android.gms.gcm.Task;
+import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
@@ -29,10 +35,6 @@ import com.sam_chordas.android.stockhawk.rest.RecyclerViewItemClickListener;
 import com.sam_chordas.android.stockhawk.rest.Utils;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
-import com.google.android.gms.gcm.Task;
-import com.melnykov.fab.FloatingActionButton;
 import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
@@ -57,12 +59,9 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mContext = this;
-    ConnectivityManager cm =
-        (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-    isConnected = activeNetwork != null &&
-        activeNetwork.isConnectedOrConnecting();
+    isConnected = isNetworkAvailable(mContext);
+
     setContentView(R.layout.activity_my_stocks);
     // The intent service is for executing immediate pulls from the Yahoo API
     // GCMTaskService can only schedule tasks, they cannot execute immediately
@@ -73,14 +72,17 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
       if (isConnected){
         startService(mServiceIntent);
       } else{
-        networkToast();
+        updateEmptyView();
       }
     }
+
     RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     recyclerView.setLayoutManager(new LinearLayoutManager(this));
     getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
-    mCursorAdapter = new QuoteCursorAdapter(this, null);
+    View emptyView = findViewById(R.id.recyclerview_stocks_empty);
+
+    mCursorAdapter = new QuoteCursorAdapter(this, null, emptyView);
     recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
             new RecyclerViewItemClickListener.OnItemClickListener() {
               @Override public void onItemClick(View v, int position) {
@@ -89,8 +91,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
               }
             }));
     recyclerView.setAdapter(mCursorAdapter);
-
-
+    
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
     fab.attachToRecyclerView(recyclerView);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -216,11 +217,45 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
   public void onLoadFinished(Loader<Cursor> loader, Cursor data){
     mCursorAdapter.swapCursor(data);
     mCursor = data;
+    updateEmptyView();
   }
 
   @Override
   public void onLoaderReset(Loader<Cursor> loader){
     mCursorAdapter.swapCursor(null);
+  }
+
+  /**
+   * Returns true if the network is available or about to become available.
+   *
+   * @param c Context used to get the ConnectivityManager
+   * @return
+   */
+  static public boolean isNetworkAvailable(Context c) {
+    ConnectivityManager cm =
+            (ConnectivityManager)c.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+    NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+    return activeNetwork != null &&
+            activeNetwork.isConnectedOrConnecting();
+  }
+
+  /**
+   * Updates the empty list view with contextually relevant information that the user can
+   * use to determine why they aren't seeing weather.
+   */
+  private void updateEmptyView() {
+    if ( mCursor == null ||  mCursor.getCount() == 0 ) {
+      TextView tv = (TextView) findViewById(R.id.recyclerview_stocks_empty);
+      if ( null != tv ) {
+        // if cursor is empty, why? do we have an invalid location
+        int message = R.string.empty_stocks_list;
+        if (!isNetworkAvailable(mContext) ) {
+          message = R.string.empty_stocks_list_no_network;
+        }
+        tv.setText(message);
+      }
+    }
   }
 
 }

@@ -1,5 +1,6 @@
 package com.sam_chordas.android.stockhawk.rest;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -29,9 +30,13 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
   private static Context mContext;
   private static Typeface robotoLight;
   private boolean isPercent;
-  public QuoteCursorAdapter(Context context, Cursor cursor){
+
+  private View mEmptyView;
+
+  public QuoteCursorAdapter(Context context, Cursor cursor, View emptyView){
     super(context, cursor);
     mContext = context;
+    mEmptyView = emptyView;
   }
 
   @Override
@@ -43,6 +48,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     return vh;
   }
 
+  @SuppressLint("NewApi")
   @Override
   public void onBindViewHolder(final ViewHolder viewHolder, final Cursor cursor){
     viewHolder.symbol.setText(cursor.getString(cursor.getColumnIndex("symbol")));
@@ -82,6 +88,12 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
   @Override public int getItemCount() {
     return super.getItemCount();
+  }
+
+  @Override
+  public Cursor swapCursor(Cursor newCursor) {
+    mEmptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+    return super.swapCursor(newCursor);
   }
 
   public static class ViewHolder extends RecyclerView.ViewHolder
