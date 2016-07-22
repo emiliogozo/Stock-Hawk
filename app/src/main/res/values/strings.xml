@@ -17,6 +17,6 @@
   <string name="empty_stocks_list_server_down">No stocks information available. The server is not returning data.</string>
   <string name="empty_stocks_list_server_error">No stocks information available. The server is not returning valid data.</string>
 
-  <!-- Key name for storing quote status in SharedPreferences -->
-  <string name="pref_quote_status_key" translatable="false">quote-status</string>
+  <!-- Key name for storing stocks status in SharedPreferences -->
+  <string name="pref_stocks_status_key" translatable="false">stocks-status</string>
 </resources>

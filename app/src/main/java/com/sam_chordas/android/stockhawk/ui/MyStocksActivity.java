@@ -238,7 +238,7 @@ public class MyStocksActivity extends AppCompatActivity
 
   @Override
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    if ( key.equals(getString(R.string.pref_quote_status_key)) ) {
+    if ( key.equals(getString(R.string.pref_stocks_status_key)) ) {
       updateEmptyView();
     }
   }
@@ -253,12 +253,12 @@ public class MyStocksActivity extends AppCompatActivity
       if ( null != tv ) {
         // if cursor is empty, why? do we have an invalid location
         int message = R.string.empty_stocks_list;
-        @StockTaskService.QuoteStatus int quote = ServiceUtils.getQuoteStatus(this);
+        @StockTaskService.StocksStatus int quote = ServiceUtils.getStocksStatus(this);
         switch (quote) {
-          case StockTaskService.QUOTE_STATUS_SERVER_DOWN:
+          case StockTaskService.STOCKS_STATUS_SERVER_DOWN:
             message = R.string.empty_stocks_list_server_down;
             break;
-          case StockTaskService.QUOTE_STATUS_SERVER_INVALID:
+          case StockTaskService.STOCKS_STATUS_SERVER_INVALID:
             message = R.string.empty_stocks_list_server_error;
             break;
           default:

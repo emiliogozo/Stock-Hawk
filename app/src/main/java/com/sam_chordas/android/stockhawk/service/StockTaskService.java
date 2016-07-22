@@ -44,13 +44,13 @@ public class StockTaskService extends GcmTaskService{
   private boolean isUpdate;
 
   @Retention(RetentionPolicy.SOURCE)
-  @IntDef({QUOTE_STATUS_OK, QUOTE_STATUS_SERVER_DOWN, QUOTE_STATUS_SERVER_INVALID, QUOTE_STATUS_UNKNOWN})
-  public @interface QuoteStatus {}
+  @IntDef({STOCKS_STATUS_OK, STOCKS_STATUS_SERVER_DOWN, STOCKS_STATUS_SERVER_INVALID, STOCKS_STATUS_UNKNOWN})
+  public @interface StocksStatus {}
 
-  public static final int QUOTE_STATUS_OK = 0;
-  public static final int QUOTE_STATUS_SERVER_DOWN = 1;
-  public static final int QUOTE_STATUS_SERVER_INVALID = 2;
-  public static final int QUOTE_STATUS_UNKNOWN = 3;
+  public static final int STOCKS_STATUS_OK = 0;
+  public static final int STOCKS_STATUS_SERVER_DOWN = 1;
+  public static final int STOCKS_STATUS_SERVER_INVALID = 2;
+  public static final int STOCKS_STATUS_UNKNOWN = 3;
 
   public StockTaskService(){}
 
@@ -133,7 +133,7 @@ public class StockTaskService extends GcmTaskService{
       try{
         getResponse = fetchData(urlString);
         result = GcmNetworkManager.RESULT_SUCCESS;
-        setQuoteStatus(mContext, QUOTE_STATUS_OK);
+        setStocksStatus(mContext, STOCKS_STATUS_OK);
 
         ContentValues contentValues = new ContentValues();
         // update ISCURRENT to 0 (false) so new data is current
@@ -148,23 +148,23 @@ public class StockTaskService extends GcmTaskService{
 
       } catch (JSONException e){
         Log.e(LOG_TAG, "String to JSON failed: " + e);
-        setQuoteStatus(mContext, QUOTE_STATUS_SERVER_INVALID);
+        setStocksStatus(mContext, STOCKS_STATUS_SERVER_INVALID);
       } catch (RemoteException | OperationApplicationException e){
         Log.e(LOG_TAG, "Error applying batch insert", e);
-        setQuoteStatus(mContext, QUOTE_STATUS_SERVER_INVALID);
+        setStocksStatus(mContext, STOCKS_STATUS_SERVER_INVALID);
       } catch (IOException e){
         e.printStackTrace();
-        setQuoteStatus(mContext, QUOTE_STATUS_SERVER_DOWN);
+        setStocksStatus(mContext, STOCKS_STATUS_SERVER_DOWN);
       }
     }
 
     return result;
   }
 
-  static private void setQuoteStatus(Context c, @QuoteStatus int quoteStatus) {
+  static private void setStocksStatus(Context c, @StocksStatus int stocksStatus) {
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
     SharedPreferences.Editor spe = sp.edit();
-    spe.putInt(c.getString(R.string.pref_quote_status_key), quoteStatus);
+    spe.putInt(c.getString(R.string.pref_stocks_status_key), stocksStatus);
     spe.commit();
   }
 }

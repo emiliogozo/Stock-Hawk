@@ -31,12 +31,13 @@ public class ServiceUtils {
     /**
      *
      * @param c Context used to get the SharedPreferences
-     * @return the location status integer type
+     * @return the stocks status integer type
      */
     @SuppressWarnings("ResourceType")
-    static public @StockTaskService.QuoteStatus int getQuoteStatus(Context c){
+    static public @StockTaskService.StocksStatus
+    int getStocksStatus(Context c){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        return sp.getInt(c.getString(R.string.pref_quote_status_key), StockTaskService.QUOTE_STATUS_UNKNOWN);
+        return sp.getInt(c.getString(R.string.pref_stocks_status_key), StockTaskService.STOCKS_STATUS_UNKNOWN);
     }
 
 }
