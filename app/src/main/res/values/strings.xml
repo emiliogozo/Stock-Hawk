@@ -1,26 +1,29 @@
 <resources>
-  <string name="app_name">Stock Hawk</string>
+    <string name="app_name">Stock Hawk</string>
 
-  <string name="action_example">Example action</string>
+    <string name="action_example">Example action</string>
 
-  <string name="action_settings">Settings</string>
-  <string name="action_change_units">Change Units</string>
-  <string name="symbol_search">Symbol Search</string>
-  <string name="content_test">Search for a Stock Symbol</string>
-  <string name="input_hint">FB</string>
-  <string name="input_prefill"></string>
+    <string name="action_settings">Settings</string>
+    <string name="action_change_units">Change Units</string>
+    <string name="symbol_search">Symbol Search</string>
+    <string name="content_test">Search for a Stock Symbol</string>
+    <string name="input_hint">FB</string>
+    <string name="input_prefill"></string>
 
-  <string name="network_toast">Uh-oh! This app requires an internet connection</string>
-  <string name="invalid_query_toast">Uh-oh! That stock quote doesn\'t exist</string>
+    <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+    <string name="invalid_query_toast">Uh-oh! That stock quote doesn\'t exist</string>
 
-  <!-- Empty Stocks Database -->
-  <string name="empty_stocks_list">No stocks information available</string>
-  <string name="empty_stocks_list_no_network">No stocks information available. The network is not available to fetch stocks data.</string>
-  <string name="empty_stocks_list_server_down">No stocks information available. The server is not returning data.</string>
-  <string name="empty_stocks_list_server_error">No stocks information available. The server is not returning valid data.</string>
+    <!-- Empty Stocks Database -->
+    <string name="empty_stocks_list">No stocks information available</string>
+    <string name="empty_stocks_list_no_network">No stocks information available. The network is not available to fetch stocks data.</string>
+    <string name="empty_stocks_list_server_down">No stocks information available. The server is not returning data.</string>
+    <string name="empty_stocks_list_server_error">No stocks information available. The server is not returning valid data.</string>
 
-  <!-- Key name for storing stocks status in SharedPreferences -->
-  <string name="pref_stocks_status_key" translatable="false">stocks-status</string>
+    <!-- Key name for storing stocks status in SharedPreferences -->
+    <string name="pref_stocks_status_key" translatable="false">stocks-status</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
