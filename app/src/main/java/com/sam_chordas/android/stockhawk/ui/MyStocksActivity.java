@@ -126,7 +126,7 @@ public class MyStocksActivity extends AppCompatActivity
               })
               .show();
         } else {
-          networkToast();
+          showToast();
         }
 
       }
@@ -172,10 +172,6 @@ public class MyStocksActivity extends AppCompatActivity
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
     sp.unregisterOnSharedPreferenceChangeListener(this);
     super.onPause();
-  }
-
-  public void networkToast(){
-    Toast.makeText(mContext, getString(R.string.network_toast), Toast.LENGTH_SHORT).show();
   }
 
   public void restoreActionBar() {
@@ -240,12 +236,13 @@ public class MyStocksActivity extends AppCompatActivity
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     if ( key.equals(getString(R.string.pref_stocks_status_key)) ) {
       updateEmptyView();
+      showToast();
     }
   }
 
   /**
    * Updates the empty list view with contextually relevant information that the user can
-   * use to determine why they aren't seeing weather.
+   * use to determine why they aren't seeing stocks data.
    */
   private void updateEmptyView() {
     if ( mCursor == null ||  mCursor.getCount() == 0 ) {
@@ -262,13 +259,27 @@ public class MyStocksActivity extends AppCompatActivity
             message = R.string.empty_stocks_list_server_error;
             break;
           default:
-            if (!ServiceUtils.isNetworkAvailable(this) ) {
               message = R.string.empty_stocks_list_no_network;
-            }
         }
         tv.setText(message);
       }
     }
   }
 
+  private void showToast() {
+    String message = null;
+    if (ServiceUtils.isNetworkAvailable(this) ) {
+      @StockTaskService.StocksStatus int quote = ServiceUtils.getStocksStatus(this);
+      switch (quote) {
+        case StockTaskService.STOCKS_STATUS_NAME_INVALID:
+          message = getString(R.string.invalid_query_toast);
+          break;
+      }
+    }
+    else {
+      message = getString(R.string.network_toast);
+    }
+    if (message != null)
+      Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+  }
 }

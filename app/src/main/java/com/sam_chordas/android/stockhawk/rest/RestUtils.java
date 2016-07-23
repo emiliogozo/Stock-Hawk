@@ -48,7 +48,7 @@ public class RestUtils {
     return batchOperations;
   }
 
-  public static String truncateBidPrice(String bidPrice){
+  public static String truncateBidPrice(String bidPrice) {
     bidPrice = String.format("%.2f", Float.parseFloat(bidPrice));
     return bidPrice;
   }
@@ -87,6 +87,8 @@ public class RestUtils {
         builder.withValue(QuoteColumns.ISUP, 1);
       }
 
+    } catch (NumberFormatException e) {
+      e.printStackTrace();
     } catch (JSONException e){
       e.printStackTrace();
     }

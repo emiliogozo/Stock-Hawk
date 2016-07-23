@@ -9,7 +9,9 @@
   <string name="content_test">Search for a Stock Symbol</string>
   <string name="input_hint">FB</string>
   <string name="input_prefill"></string>
+
   <string name="network_toast">Uh-oh! This app requires an internet connection</string>
+  <string name="invalid_query_toast">Uh-oh! That stock quote doesn\'t exist</string>
 
   <!-- Empty Stocks Database -->
   <string name="empty_stocks_list">No stocks information available</string>

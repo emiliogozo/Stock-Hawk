@@ -6,6 +6,7 @@ import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.support.annotation.IntDef;
@@ -44,13 +45,15 @@ public class StockTaskService extends GcmTaskService{
   private boolean isUpdate;
 
   @Retention(RetentionPolicy.SOURCE)
-  @IntDef({STOCKS_STATUS_OK, STOCKS_STATUS_SERVER_DOWN, STOCKS_STATUS_SERVER_INVALID, STOCKS_STATUS_UNKNOWN})
+  @IntDef({STOCKS_STATUS_OK, STOCKS_STATUS_SERVER_DOWN, STOCKS_STATUS_SERVER_INVALID,
+          STOCKS_STATUS_NAME_INVALID, STOCKS_STATUS_UNKNOWN})
   public @interface StocksStatus {}
 
   public static final int STOCKS_STATUS_OK = 0;
   public static final int STOCKS_STATUS_SERVER_DOWN = 1;
   public static final int STOCKS_STATUS_SERVER_INVALID = 2;
-  public static final int STOCKS_STATUS_UNKNOWN = 3;
+  public static final int STOCKS_STATUS_NAME_INVALID = 3;
+  public static final int STOCKS_STATUS_UNKNOWN = 4;
 
   public StockTaskService(){}
 
@@ -152,6 +155,9 @@ public class StockTaskService extends GcmTaskService{
       } catch (RemoteException | OperationApplicationException e){
         Log.e(LOG_TAG, "Error applying batch insert", e);
         setStocksStatus(mContext, STOCKS_STATUS_SERVER_INVALID);
+      } catch (SQLiteConstraintException e) {
+        e.printStackTrace();
+        setStocksStatus(mContext, STOCKS_STATUS_NAME_INVALID);
       } catch (IOException e){
         e.printStackTrace();
         setStocksStatus(mContext, STOCKS_STATUS_SERVER_DOWN);
@@ -167,4 +173,5 @@ public class StockTaskService extends GcmTaskService{
     spe.putInt(c.getString(R.string.pref_stocks_status_key), stocksStatus);
     spe.commit();
   }
+
 }
