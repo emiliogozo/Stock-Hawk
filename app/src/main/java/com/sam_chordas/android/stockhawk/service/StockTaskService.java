@@ -2,6 +2,7 @@ package com.sam_chordas.android.stockhawk.service;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -38,6 +39,8 @@ import java.net.URLEncoder;
  */
 public class StockTaskService extends GcmTaskService{
   private String LOG_TAG = StockTaskService.class.getSimpleName();
+  public static final String ACTION_DATA_UPDATED =
+          "com.sam_chordas.android.stockhawk.ACTION_DATA_UPDATED";
 
   private OkHttpClient client = new OkHttpClient();
   private Context mContext;
@@ -149,6 +152,8 @@ public class StockTaskService extends GcmTaskService{
         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                 RestUtils.quoteJsonToContentVals(getResponse));
 
+        updateWidgets();
+
       } catch (JSONException e){
         Log.e(LOG_TAG, "String to JSON failed: " + e);
         setStocksStatus(mContext, STOCKS_STATUS_SERVER_INVALID);
@@ -172,6 +177,13 @@ public class StockTaskService extends GcmTaskService{
     SharedPreferences.Editor spe = sp.edit();
     spe.putInt(c.getString(R.string.pref_stocks_status_key), stocksStatus);
     spe.commit();
+  }
+
+  private void updateWidgets() {
+    // Setting the package ensures that only components in our app will receive the broadcast
+    Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+            .setPackage(mContext.getPackageName());
+    mContext.sendBroadcast(dataUpdatedIntent);
   }
 
 }

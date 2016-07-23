@@ -21,4 +21,6 @@
 
   <!-- Key name for storing stocks status in SharedPreferences -->
   <string name="pref_stocks_status_key" translatable="false">stocks-status</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
