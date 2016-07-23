@@ -14,7 +14,7 @@ import android.widget.RemoteViews;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.service.DetailWidgetRemoteViewsService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
-import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
+import com.sam_chordas.android.stockhawk.ui.MainActivity;
 
 /**
  * Implementation of App Widget functionality.
@@ -31,7 +31,7 @@ public class MyStocksWidget extends AppWidgetProvider {
         //views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Create an Intent to launch MainActivity
-        Intent intent = new Intent(context, MyStocksActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.widget, pendingIntent);
 

@@ -25,7 +25,7 @@ import com.sam_chordas.android.stockhawk.rest.RestUtils;
 import com.sam_chordas.android.stockhawk.service.StockIntentService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
 
-public class MyStocksActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
   /**
    * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -42,7 +42,7 @@ public class MyStocksActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.activity_my_stocks);
+    setContentView(R.layout.activity_main);
 
     mContext = this;
 
@@ -74,7 +74,7 @@ public class MyStocksActivity extends AppCompatActivity {
                       new String[] { input.toString().toUpperCase() }, null);
                   if (c.getCount() != 0) {
                     Toast toast =
-                        Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                        Toast.makeText(MainActivity.this, "This stock is already saved!",
                             Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                     toast.show();
