@@ -31,7 +31,10 @@
     <!-- Key name for storing status in SharedPreferences -->
     <string name="pref_stocks_status_key" translatable="false">stocks-status</string>
 
-    <string name="appwidget_text">EXAMPLE</string>
+    <!-- Content description -->
+    <string name="desc_line_chart">Historical Line Chart</string>
+    <string name="desc_stock_quote_list">Stock Quote List</string>
+    <string name="desc_marker_value">Value</string>
 
     <string-array name="spinner_list_change_range">
         <item>1 week</item>

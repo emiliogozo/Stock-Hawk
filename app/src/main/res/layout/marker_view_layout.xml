@@ -12,6 +12,7 @@
         android:singleLine="true"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="24.33"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="@string/desc_marker_value" />
 
 </FrameLayout>
