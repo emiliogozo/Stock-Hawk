@@ -22,7 +22,7 @@
       tools:fab_colorRipple="@color/ripple"
       tools:fab_shadow="true"
       tools:fab_type="normal"
-      tools:layout_anchor="recycler_view"
+      tools:layout_anchor="@id/fragment_my_stocks"
       tools:layout_anchorGravity="bottom | end"
-      />
+      android:contentDescription="@string/fab_add_stock_symbol" />
 </FrameLayout>

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.Menu;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    //fab.attachToRecyclerView(recyclerView);
+    fab.attachToRecyclerView((RecyclerView) findViewById(R.id.recycler_view));
     fab.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         if (Utility.isNetworkAvailable(mContext)){
