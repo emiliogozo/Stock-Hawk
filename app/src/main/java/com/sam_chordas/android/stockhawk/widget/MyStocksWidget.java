@@ -9,11 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
 
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.service.DetailWidgetRemoteViewsService;
 import com.sam_chordas.android.stockhawk.service.StockTaskService;
+import com.sam_chordas.android.stockhawk.ui.GraphActivity;
 import com.sam_chordas.android.stockhawk.ui.MainActivity;
 
 /**
@@ -24,11 +26,8 @@ public class MyStocksWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = context.getString(R.string.appwidget_text);
-
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_my_stocks);
-        //views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Create an Intent to launch MainActivity
         Intent intent = new Intent(context, MainActivity.class);
@@ -42,6 +41,11 @@ public class MyStocksWidget extends AppWidgetProvider {
             setRemoteAdapterV11(context, views);
         }
 
+        Intent clickIntentTemplate = new Intent(context, GraphActivity.class);
+        PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
+                .addNextIntentWithParentStack(clickIntentTemplate)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
         views.setEmptyView(R.id.widget_list, R.id.widget_empty);
 
         // Instruct the widget manager to update the widget

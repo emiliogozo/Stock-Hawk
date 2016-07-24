@@ -94,6 +94,10 @@ public class DetailWidgetRemoteViewsService extends RemoteViewsService {
                 views.setTextViewText(R.id.bid_price, data.getString(INDEX_QUOTE_BIDPRICE));
                 views.setTextViewText(R.id.change, data.getString(INDEX_QUOTE_CHANGE));
 
+                final Intent fillInIntent = new Intent();
+                fillInIntent.putExtra(Intent.EXTRA_TEXT, data.getString(INDEX_QUOTE_SYMBOL));
+                views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
+
                 if (data.getInt(INDEX_ISUP) == 1){
                     views.setInt(R.id.change, "setBackgroundResource", R.drawable.percent_change_pill_green);
                 } else{
