@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.sam_chordas.android.stockhawk.ui.GraphActivity">
+
+    <item
+        android:id="@+id/action_change_range"
+        android:title="@string/action_change_range"
+        app:actionViewClass="android.widget.Spinner"
+        app:showAsAction="always" />
+
+</menu>

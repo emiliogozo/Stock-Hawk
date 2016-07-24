@@ -1,5 +1,6 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -55,8 +56,10 @@ public class MyStocksFragment extends Fragment implements LoaderManager.LoaderCa
         recyclerView.addOnItemTouchListener(new RecyclerViewItemClickListener(getActivity(),
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View v, int position) {
-                        //TODO:
-                        // do something on item click
+                        Intent intent = new Intent(getActivity(), GraphActivity.class);
+                        mCursor.moveToPosition(position);
+                        intent.putExtra(Intent.EXTRA_TEXT, mCursor.getString(mCursor.getColumnIndex("symbol")));
+                        startActivity(intent);
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
