@@ -18,7 +18,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteColumns;
 import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 
 /**
- * RemoteViewsService controlling the data being shown in the scrollable weather detail widget
+ * RemoteViewsService controlling the data being shown in the scrollable widget
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DetailWidgetRemoteViewsService extends RemoteViewsService {

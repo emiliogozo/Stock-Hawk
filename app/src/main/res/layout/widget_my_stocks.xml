@@ -17,8 +17,10 @@
             android:layout_height="match_parent"
             android:text="@string/app_name"
             android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
+            android:paddingStart="@dimen/abc_list_item_padding_horizontal_material"
             android:gravity="center_vertical"
-            style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title" />
+            style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+            tools:ignore="RtlSymmetry" />
     </FrameLayout>
     
     <FrameLayout

@@ -29,10 +29,6 @@ import com.sam_chordas.android.stockhawk.service.StockTaskService;
 public class MainActivity extends AppCompatActivity {
 
   /**
-   * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-   */
-
-  /**
    * Used to store the last screen title. For use in {@link #restoreActionBar()}.
    */
   private CharSequence mTitle;
@@ -138,11 +134,6 @@ public class MainActivity extends AppCompatActivity {
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
-
-    //noinspection SimplifiableIfStatement
-    if (id == R.id.action_settings) {
-      return true;
-    }
 
     if (id == R.id.action_change_units){
       // this is for changing stock changes from percent value to dollar value

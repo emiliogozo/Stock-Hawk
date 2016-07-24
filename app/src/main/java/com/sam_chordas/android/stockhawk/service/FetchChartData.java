@@ -25,6 +25,7 @@ import java.util.List;
 
 /**
  * Created by yoh268 on 7/23/2016.
+ * An AsyncTask to download historical data for plotting
  */
 public class FetchChartData extends AsyncTask<String, Void, Integer> {
 
