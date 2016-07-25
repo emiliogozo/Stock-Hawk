@@ -8,7 +8,9 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/desc_stock_quote_list" />
+        android:contentDescription="@string/desc_stock_quote_list"
+        android:paddingBottom="48dp"
+        android:clipToPadding="false" />
 
     <TextView
         android:id="@+id/recyclerview_stocks_empty"
