@@ -14,6 +14,7 @@
 
     <string name="network_toast">Uh-oh! This app requires an internet connection</string>
     <string name="invalid_query_toast">Uh-oh! That stock quote doesn\'t exist</string>
+    <string name="stock_exists_toast">This stock is already saved!</string>
 
     <!-- Empty Stocks Database -->
     <string name="empty_stocks_list">No stocks information available</string>
@@ -34,6 +35,10 @@
     <string name="desc_line_chart">Historical Line Chart</string>
     <string name="desc_stock_quote_list">Stock Quote List</string>
     <string name="desc_marker_value">Value</string>
+
+    <!-- Log Messages -->
+    <string name="log_error">Error </string>
+    <string name="log_error_close_stream">Error closing stream</string>
 
     <string-array name="spinner_list_change_range">
         <item>1 week</item>

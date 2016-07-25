@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.annotation.IntDef;
 import android.util.Log;
 
+import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.ui.Utility;
 
 import org.json.JSONArray;
@@ -122,7 +123,7 @@ public class FetchChartData extends AsyncTask<String, Void, Integer> {
                 jsonStr = jsonStr.substring(startStr.length(), jsonStr.length() - 1). trim();
             }
         } catch(IOException e) {
-            Log.e(LOG_TAG, "Error ", e);
+            Log.e(LOG_TAG, mContext.getResources().getString(R.string.log_error)+" ", e);
             chartDataStatus = CHART_DATA_STATUS_SERVER_DOWN;
             e.printStackTrace();
         } finally {
@@ -133,7 +134,8 @@ public class FetchChartData extends AsyncTask<String, Void, Integer> {
                 try {
                     reader.close();
                 } catch (final IOException e) {
-                    Log.e(LOG_TAG, "Error closing stream", e);
+                    Log.e(LOG_TAG,
+                            mContext.getResources().getString(R.string.log_error_close_stream), e);
                 }
             }
         }

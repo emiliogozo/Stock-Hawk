@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                       new String[] { input.toString().toUpperCase() }, null);
                   if (c.getCount() != 0) {
                     Toast toast =
-                        Toast.makeText(MainActivity.this, "This stock is already saved!",
+                        Toast.makeText(MainActivity.this, R.string.stock_exists_toast,
                             Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                     toast.show();

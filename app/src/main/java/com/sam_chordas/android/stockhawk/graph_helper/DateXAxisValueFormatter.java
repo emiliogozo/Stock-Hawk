@@ -11,11 +11,13 @@ import java.util.Date;
  * Created by yoh268 on 7/24/2016.
  */
 public class DateXAxisValueFormatter implements XAxisValueFormatter {
+    private final String DATE_FORMAT_IN = "yyyyMMdd";
+    private final String DATE_FORMAT_OUT = "ddMMMyyyy";
 
     @Override
     public String getXValue(String original, int index, ViewPortHandler viewPortHandler) {
-        SimpleDateFormat dateFormatIn = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat dateFormatOut = new SimpleDateFormat("ddMMMyyyy");
+        SimpleDateFormat dateFormatIn = new SimpleDateFormat(DATE_FORMAT_IN);
+        SimpleDateFormat dateFormatOut = new SimpleDateFormat(DATE_FORMAT_OUT);
         try {
             Date date = dateFormatIn.parse(original);
             return dateFormatOut.format(date);
